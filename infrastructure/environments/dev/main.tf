@@ -59,3 +59,18 @@ module "compute" {
     }
   }
 }
+
+
+############################################################################
+# After networking, security, compute blocks, append:
+
+module "database" {
+  source                    = "../../modules/database/variables.tf"
+  name_prefix               = "dev"
+  private_subnet_ids        = module.networking.private_subnet_ids
+  private_subnets_for_cache = module.networking.private_subnet_ids
+  security_group_ids        = [aws_security_group.db.id]
+  username                  = var.db_username
+  password                  = var.db_password
+  tags                      = { Environment = "dev" }
+}
